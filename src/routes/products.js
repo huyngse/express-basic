@@ -1,177 +1,7 @@
 import { Router } from "express";
+import { PRODUCTS } from "../data/products.js";
 
 const router = Router();
-
-const PRODUCTS = [
-  {
-    id: 1,
-    name: "Cozy Camp Mug ☕",
-    description: "A sturdy enamel mug perfect for hot cocoa under the stars~",
-    price: 14.99,
-    inStock: true,
-    category: "Camping Gear",
-    image: "/images/mug.jpg",
-  },
-  {
-    id: 2,
-    name: "Fluffy Sleeping Bag 💤",
-    description: "Super warm and snuggly sleeping bag for chilly nights~",
-    price: 89.99,
-    inStock: true,
-    category: "Camping Gear",
-    image: "/images/sleeping-bag.jpg",
-  },
-  {
-    id: 3,
-    name: "S’mores Kit 🍫",
-    description: "All the yummy essentials for campfire s’mores—just add fire!",
-    price: 12.5,
-    inStock: false,
-    category: "Snacks",
-    image: "/images/smores.jpg",
-  },
-  {
-    id: 4,
-    name: "Mini Lantern 🔦",
-    description: "Tiny but mighty LED lantern that lights up your campsite~",
-    price: 24.0,
-    inStock: true,
-    category: "Lighting",
-    image: "/images/lantern.jpg",
-  },
-  {
-    id: 5,
-    name: "Thermal Picnic Blanket 🧺",
-    description:
-      "Soft and waterproof blanket—perfect for cozy picnics or stargazing!",
-    price: 39.99,
-    inStock: true,
-    category: "Outdoor Living",
-    image: "/images/blanket.jpg",
-  },
-];
-
-/**
- * @swagger
- * tags:
- *   name: Products
- *   description: API for managing camp store products
- */
-
-/**
- * @swagger
- * /api/products:
- *   get:
- *     summary: Get all products
- *     description: Retrieve a paginated list of all available products. You can also filter by specific fields like category or inStock~!
- *     tags: [Products]
- *     parameters:
- *       - in: query
- *         name: filter
- *         schema:
- *           type: string
- *         description: The field name to filter by (e.g., `category`, `inStock`, `name`).
- *       - in: query
- *         name: value
- *         schema:
- *           type: string
- *         description: The value to filter the selected field by.
- *       - in: query
- *         name: page
- *         schema:
- *           type: integer
- *           default: 1
- *         description: The page number for pagination.
- *       - in: query
- *         name: limit
- *         schema:
- *           type: integer
- *           default: 10
- *         description: The number of products per page.
- *     responses:
- *       200:
- *         description: A paginated list of products
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 page:
- *                   type: integer
- *                 limit:
- *                   type: integer
- *                 totalItems:
- *                   type: integer
- *                 totalPages:
- *                   type: integer
- *                 data:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Product'
- */
-
-/**
- * @swagger
- * /api/products/{id}:
- *   get:
- *     summary: Get a product by ID
- *     description: Fetch a single product using its unique ID
- *     tags: [Products]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: The product ID
- *     responses:
- *       200:
- *         description: Product found successfully
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Product'
- *       404:
- *         description: Product not found
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Product not found
- */
-
-/**
- * @swagger
- * components:
- *   schemas:
- *     Product:
- *       type: object
- *       properties:
- *         id:
- *           type: integer
- *           example: 1
- *         name:
- *           type: string
- *           example: Cozy Camp Mug
- *         description:
- *           type: string
- *           example: A sturdy enamel mug perfect for hot cocoa under the stars~
- *         price:
- *           type: number
- *           example: 14.99
- *         inStock:
- *           type: boolean
- *           example: true
- *         category:
- *           type: string
- *           example: Camping Gear
- *         image:
- *           type: string
- *           example: /images/mug.jpg
- */
 
 router.get("/", (req, res) => {
   const { filter, value, page = 1, limit = 10 } = req.query;
@@ -212,6 +42,93 @@ router.get("/:id", (req, res) => {
   } else {
     return res.status(404).json({ message: "Product not found" });
   }
+});
+
+router.post("/", (req, res) => {
+  const { name, description, price, inStock, category, image } = req.body;
+
+  if (!name || !price) {
+    return res.status(400).json({ message: "Missing required fields!" });
+  }
+
+  const newProduct = {
+    id: PRODUCTS.length + 1,
+    name,
+    description,
+    price,
+    inStock,
+    category,
+    image,
+  };
+  PRODUCTS.push(newProduct);
+
+  res.status(201).json({
+    message: "Product created successfully!",
+    product: newProduct,
+  });
+});
+
+router.put("/:id", (req, res) => {
+  const { id } = req.params;
+  const { name, description, price, inStock, category, image } = req.body;
+
+  const productIndex = PRODUCTS.findIndex((p) => p.id === parseInt(id));
+
+  if (productIndex === -1) {
+    return res.status(404).json({ message: "Product not found!" });
+  }
+
+  const existingProduct = PRODUCTS[productIndex];
+
+  const updatedProduct = {
+    ...existingProduct,
+    name: name ?? existingProduct.name,
+    description: description ?? existingProduct.description,
+    price: price ?? existingProduct.price,
+    inStock: inStock ?? existingProduct.inStock,
+    category: category ?? existingProduct.category,
+    image: image ?? existingProduct.image,
+  };
+
+  PRODUCTS[productIndex] = updatedProduct;
+
+  res.json({
+    message: "Product updated successfully!",
+    product: updatedProduct,
+  });
+});
+
+router.patch("/:id", (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+
+  const productIndex = PRODUCTS.findIndex((p) => p.id === parseInt(id));
+
+  if (productIndex === -1) {
+    return res.status(404).json({ message: "Product not found!" });
+  }
+
+  const existingProduct = PRODUCTS[productIndex];
+  const updatedProduct = { ...existingProduct, ...updates };
+
+  PRODUCTS[productIndex] = updatedProduct;
+
+  res.json({
+    message: "Product updated successfully!",
+    product: updatedProduct,
+  });
+});
+
+router.delete('/:id', (req, res) => {
+  const productId = parseInt(req.params.id);
+  const index = PRODUCTS.findIndex(p => p.id === productId);
+
+  if (index === -1) {
+    return res.status(404).json({ message: 'Product not found!' });
+  }
+
+  const deletedProduct = PRODUCTS.splice(index, 1);
+  res.json({ message: 'Product deleted successfully!', deleted: deletedProduct[0] });
 });
 
 export default router;

@@ -26,19 +26,20 @@ const swaggerOptions = {
       },
     ],
   },
-  apis: [path.join(__dirname, "./routes/*.js")],
+  apis: [path.join(__dirname, "./docs/*.yaml")],
 };
 
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
+app.use(express.json());
+
 app.get("/", (req, res) => {
-  return res.status(200).json({ msg: "Hello!" });
+  return res.status(200).json({ msg: "Hello world!" });
 });
 
 app.use("/api/products", productRouter);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
 
 app.listen(PORT, () => {
   console.log(`Express: http://localhost:${PORT}`);

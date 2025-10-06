@@ -1,0 +1,369 @@
+openapi: 3.0.0
+info:
+  title: Camp Store Products API
+  version: 1.0.0
+  description: API for managing camp store products
+
+tags:
+  - name: Products
+    description: API for managing camp store products
+
+paths:
+  /api/products:
+    get:
+      summary: Get all products
+      description: Retrieve a paginated list of all available products. You can also filter by specific fields like category or inStock~!
+      tags:
+        - Products
+      parameters:
+        - in: query
+          name: filter
+          schema:
+            type: string
+          description: The field name to filter by (e.g., `category`, `inStock`, `name`).
+        - in: query
+          name: value
+          schema:
+            type: string
+          description: The value to filter the selected field by.
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 1
+          description: The page number for pagination.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          description: The number of products per page.
+      responses:
+        200:
+          description: A paginated list of products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+                  totalItems:
+                    type: integer
+                  totalPages:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Product"
+
+    post:
+      summary: Create a new product
+      description: Adds a new product to the list (the product ID is automatically generated)
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Cozy Camp Mug
+                description:
+                  type: string
+                  example: A sturdy enamel mug perfect for hot cocoa under the stars~
+                price:
+                  type: number
+                  example: 14.99
+                inStock:
+                  type: boolean
+                  example: true
+                category:
+                  type: string
+                  example: Camping Gear
+                image:
+                  type: string
+                  example: /images/mug.jpg
+      responses:
+        201:
+          description: Product created successfully!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product created successfully!
+                  product:
+                    $ref: "#/components/schemas/Product"
+        400:
+          description: Missing required fields
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Missing required fields!
+
+  /api/products/{id}:
+    get:
+      summary: Get a product by ID
+      description: Fetch a single product using its unique ID
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The product ID
+      responses:
+        200:
+          description: Product found successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        404:
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product not found
+
+    put:
+      summary: Update an existing product
+      description: Updates product details by its unique ID. Only the provided fields will be updated.
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the product to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Updated Product Name
+                description:
+                  type: string
+                  example: A wonderful new description!
+                price:
+                  type: number
+                  example: 29.99
+                inStock:
+                  type: boolean
+                  example: true
+                category:
+                  type: string
+                  example: Accessories
+                image:
+                  type: string
+                  example: https://example.com/image.jpg
+      responses:
+        200:
+          description: Product updated successfully!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product updated successfully!
+                  product:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: Updated Product Name
+                      description:
+                        type: string
+                        example: A wonderful new description!
+                      price:
+                        type: number
+                        example: 29.99
+                      inStock:
+                        type: boolean
+                        example: true
+                      category:
+                        type: string
+                        example: Accessories
+                      image:
+                        type: string
+                        example: https://example.com/image.jpg
+        400:
+          description: Invalid request or missing data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Missing required fields!
+        404:
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product not found!
+
+    patch:
+      summary: Partially update a product
+      description: Updates only the specified fields of a product by its unique ID.
+      tags:
+        - Products
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the product to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "New Product Name"
+                description:
+                  type: string
+                  example: "Updated product description"
+                price:
+                  type: number
+                  example: 19.99
+                inStock:
+                  type: boolean
+                  example: false
+                category:
+                  type: string
+                  example: "Gadgets"
+                image:
+                  type: string
+                  example: "https://example.com/image.jpg"
+      responses:
+        200:
+          description: Product updated successfully!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Product updated successfully!"
+                  product:
+                    type: object
+        404:
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Product not found!"
+
+    delete:
+      summary: Delete a product by ID
+      description: Removes a product from the array by its ID
+      tags:
+        - Products
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the product to delete
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Product deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product deleted successfully!
+                  deleted:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 2
+                      name:
+                        type: string
+                        example: Sleeping Bag
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Product not found!
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+          example: 1
+        name:
+          type: string
+          example: Cozy Camp Mug
+        description:
+          type: string
+          example: A sturdy enamel mug perfect for hot cocoa under the stars~
+        price:
+          type: number
+          example: 14.99
+        inStock:
+          type: boolean
+          example: true
+        category:
+          type: string
+          example: Camping Gear
+        image:
+          type: string
+          example: /images/mug.jpg
