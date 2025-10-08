@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { PRODUCTS } from "../data/products.js";
+import { checkProductExists } from "../middlewares/checkProductExists.js";
 
 const router = Router();
 
@@ -33,15 +34,8 @@ router.get("/", (req, res) => {
   });
 });
 
-router.get("/:id", (req, res) => {
-  const { id } = req.params;
-  const product = PRODUCTS.find((p) => p.id === Number(id));
-
-  if (product) {
-    return res.json(product);
-  } else {
-    return res.status(404).json({ message: "Product not found" });
-  }
+router.get("/:id", checkProductExists, (req, res) => {
+  res.json(req.product);
 });
 
 router.post("/", (req, res) => {
@@ -68,16 +62,11 @@ router.post("/", (req, res) => {
   });
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", checkProductExists, (req, res) => {
   const { id } = req.params;
   const { name, description, price, inStock, category, image } = req.body;
 
   const productIndex = PRODUCTS.findIndex((p) => p.id === parseInt(id));
-
-  if (productIndex === -1) {
-    return res.status(404).json({ message: "Product not found!" });
-  }
-
   const existingProduct = PRODUCTS[productIndex];
 
   const updatedProduct = {
@@ -98,16 +87,11 @@ router.put("/:id", (req, res) => {
   });
 });
 
-router.patch("/:id", (req, res) => {
+router.patch("/:id", checkProductExists, (req, res) => {
   const { id } = req.params;
   const updates = req.body;
 
   const productIndex = PRODUCTS.findIndex((p) => p.id === parseInt(id));
-
-  if (productIndex === -1) {
-    return res.status(404).json({ message: "Product not found!" });
-  }
-
   const existingProduct = PRODUCTS[productIndex];
   const updatedProduct = { ...existingProduct, ...updates };
 
@@ -119,16 +103,15 @@ router.patch("/:id", (req, res) => {
   });
 });
 
-router.delete('/:id', (req, res) => {
+router.delete("/:id", checkProductExists, (req, res) => {
   const productId = parseInt(req.params.id);
-  const index = PRODUCTS.findIndex(p => p.id === productId);
-
-  if (index === -1) {
-    return res.status(404).json({ message: 'Product not found!' });
-  }
+  const index = PRODUCTS.findIndex((p) => p.id === productId);
 
   const deletedProduct = PRODUCTS.splice(index, 1);
-  res.json({ message: 'Product deleted successfully!', deleted: deletedProduct[0] });
+  res.json({
+    message: "Product deleted successfully!",
+    deleted: deletedProduct[0],
+  });
 });
 
 export default router;
