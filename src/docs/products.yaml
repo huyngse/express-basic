@@ -17,48 +17,13 @@ paths:
       tags:
         - Products
       parameters:
-        - in: query
-          name: filter
-          schema:
-            type: string
-          description: The field name to filter by (e.g., `category`, `inStock`, `name`).
-        - in: query
-          name: value
-          schema:
-            type: string
-          description: The value to filter the selected field by.
-        - in: query
-          name: page
-          schema:
-            type: integer
-            default: 1
-          description: The page number for pagination.
-        - in: query
-          name: limit
-          schema:
-            type: integer
-            default: 10
-          description: The number of products per page.
+        - $ref: '#/components/parameters/filter'
+        - $ref: '#/components/parameters/value'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
       responses:
         200:
-          description: A paginated list of products
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  page:
-                    type: integer
-                  limit:
-                    type: integer
-                  totalItems:
-                    type: integer
-                  totalPages:
-                    type: integer
-                  data:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Product"
+          $ref: '#/components/responses/ProductList'
 
     post:
       summary: Create a new product
@@ -66,53 +31,12 @@ paths:
       tags:
         - Products
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: Cozy Camp Mug
-                description:
-                  type: string
-                  example: A sturdy enamel mug perfect for hot cocoa under the stars~
-                price:
-                  type: number
-                  example: 14.99
-                inStock:
-                  type: boolean
-                  example: true
-                category:
-                  type: string
-                  example: Camping Gear
-                image:
-                  type: string
-                  example: /images/mug.jpg
+        $ref: '#/components/requestBodies/ProductCreate'
       responses:
         201:
-          description: Product created successfully!
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Product created successfully!
-                  product:
-                    $ref: "#/components/schemas/Product"
+          $ref: '#/components/responses/ProductCreated'
         400:
-          description: Missing required fields
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Missing required fields!
+          $ref: '#/components/responses/BadRequest'
 
   /api/products/{id}:
     get:
@@ -121,29 +45,12 @@ paths:
       tags:
         - Products
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-          description: The product ID
+        - $ref: '#/components/parameters/id'
       responses:
         200:
-          description: Product found successfully
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Product"
+          $ref: '#/components/responses/ProductFound'
         404:
-          description: Product not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Product not found
+          $ref: '#/components/responses/NotFound'
 
     put:
       summary: Update an existing product
@@ -151,92 +58,16 @@ paths:
       tags:
         - Products
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-          description: The ID of the product to update
+        - $ref: '#/components/parameters/id'
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: Updated Product Name
-                description:
-                  type: string
-                  example: A wonderful new description!
-                price:
-                  type: number
-                  example: 29.99
-                inStock:
-                  type: boolean
-                  example: true
-                category:
-                  type: string
-                  example: Accessories
-                image:
-                  type: string
-                  example: https://example.com/image.jpg
+        $ref: '#/components/requestBodies/ProductUpdate'
       responses:
         200:
-          description: Product updated successfully!
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Product updated successfully!
-                  product:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                        example: 1
-                      name:
-                        type: string
-                        example: Updated Product Name
-                      description:
-                        type: string
-                        example: A wonderful new description!
-                      price:
-                        type: number
-                        example: 29.99
-                      inStock:
-                        type: boolean
-                        example: true
-                      category:
-                        type: string
-                        example: Accessories
-                      image:
-                        type: string
-                        example: https://example.com/image.jpg
+          $ref: '#/components/responses/ProductUpdated'
         400:
-          description: Invalid request or missing data
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Missing required fields!
+          $ref: '#/components/responses/BadRequest'
         404:
-          description: Product not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Product not found!
+          $ref: '#/components/responses/NotFound'
 
     patch:
       summary: Partially update a product
@@ -244,60 +75,14 @@ paths:
       tags:
         - Products
       parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-          description: The ID of the product to update
+        - $ref: '#/components/parameters/id'
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: "New Product Name"
-                description:
-                  type: string
-                  example: "Updated product description"
-                price:
-                  type: number
-                  example: 19.99
-                inStock:
-                  type: boolean
-                  example: false
-                category:
-                  type: string
-                  example: "Gadgets"
-                image:
-                  type: string
-                  example: "https://example.com/image.jpg"
+        $ref: '#/components/requestBodies/ProductPartialUpdate'
       responses:
         200:
-          description: Product updated successfully!
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Product updated successfully!"
-                  product:
-                    type: object
+          $ref: '#/components/responses/ProductUpdated'
         404:
-          description: Product not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Product not found!"
+          $ref: '#/components/responses/NotFound'
 
     delete:
       summary: Delete a product by ID
@@ -305,44 +90,152 @@ paths:
       tags:
         - Products
       parameters:
-        - name: id
-          in: path
-          required: true
-          description: ID of the product to delete
-          schema:
-            type: integer
+        - $ref: '#/components/parameters/id'
       responses:
         200:
-          description: Product deleted successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Product deleted successfully!
-                  deleted:
-                    type: object
-                    properties:
-                      id:
-                        type: integer
-                        example: 2
-                      name:
-                        type: string
-                        example: Sleeping Bag
+          $ref: '#/components/responses/ProductDeleted'
         404:
-          description: Product not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Product not found!
+          $ref: '#/components/responses/NotFound'
 
 components:
+  parameters:
+    id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: The product ID
+    filter:
+      name: filter
+      in: query
+      schema:
+        type: string
+      description: The field name to filter by (e.g., `category`, `inStock`, `name`)
+    value:
+      name: value
+      in: query
+      schema:
+        type: string
+      description: The value to filter the selected field by
+    page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        default: 1
+      description: The page number for pagination
+    limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        default: 10
+      description: The number of products per page
+
+  requestBodies:
+    ProductCreate:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProductInput'
+    ProductUpdate:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProductInput'
+    ProductPartialUpdate:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProductPartialInput'
+
+  responses:
+    ProductList:
+      description: A paginated list of products
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              page:
+                type: integer
+              limit:
+                type: integer
+              totalItems:
+                type: integer
+              totalPages:
+                type: integer
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+    ProductCreated:
+      description: Product created successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Product created successfully!
+              product:
+                $ref: '#/components/schemas/Product'
+    ProductFound:
+      description: Product found successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Product'
+    ProductUpdated:
+      description: Product updated successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Product updated successfully!
+              product:
+                $ref: '#/components/schemas/Product'
+    ProductDeleted:
+      description: Product deleted successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Product deleted successfully!
+              deleted:
+                $ref: '#/components/schemas/Product'
+    BadRequest:
+      description: Invalid request or missing data
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Missing required fields!
+    NotFound:
+      description: Product not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Product not found!
+
   schemas:
     Product:
       type: object
@@ -351,6 +244,48 @@ components:
           type: integer
           readOnly: true
           example: 1
+        name:
+          type: string
+          example: Cozy Camp Mug
+        description:
+          type: string
+          example: A sturdy enamel mug perfect for hot cocoa under the stars~
+        price:
+          type: number
+          example: 14.99
+        inStock:
+          type: boolean
+          example: true
+        category:
+          type: string
+          example: Camping Gear
+        image:
+          type: string
+          example: /images/mug.jpg
+    ProductInput:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Cozy Camp Mug
+        description:
+          type: string
+          example: A sturdy enamel mug perfect for hot cocoa under the stars~
+        price:
+          type: number
+          example: 14.99
+        inStock:
+          type: boolean
+          example: true
+        category:
+          type: string
+          example: Camping Gear
+        image:
+          type: string
+          example: /images/mug.jpg
+    ProductPartialInput:
+      type: object
+      properties:
         name:
           type: string
           example: Cozy Camp Mug

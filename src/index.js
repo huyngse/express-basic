@@ -5,6 +5,7 @@ import swaggerUi from "swagger-ui-express";
 import path from "path";
 import { fileURLToPath } from "url";
 import logger from "./middlewares/logger.js";
+import chalk from "chalk";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -45,5 +46,5 @@ app.use("/api/products", productRouter);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.listen(PORT, () => {
-  console.log(`Express: http://localhost:${PORT}`);
+  console.log(chalk.magenta(`Express: http://localhost:${PORT}`));
 });

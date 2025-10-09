@@ -1,10 +1,23 @@
 import { Router } from "express";
 import { PRODUCTS } from "../data/products.js";
 import { checkProductExists } from "../middlewares/checkProductExists.js";
+import { validationResult } from "express-validator";
+import {
+  validateCreateProduct,
+  validateGetProducts,
+  validateId,
+  validatePatchProduct,
+  validateUpdateProduct,
+} from "../validators/products.js";
 
 const router = Router();
 
-router.get("/", (req, res) => {
+router.get("/", validateGetProducts, (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const { filter, value, page = 1, limit = 10 } = req.query;
 
   const pageNum = parseInt(page, 10);
@@ -34,16 +47,21 @@ router.get("/", (req, res) => {
   });
 });
 
-router.get("/:id", checkProductExists, (req, res) => {
+router.get("/:id", validateId, checkProductExists, (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   res.json(req.product);
 });
 
-router.post("/", (req, res) => {
-  const { name, description, price, inStock, category, image } = req.body;
-
-  if (!name || !price) {
-    return res.status(400).json({ message: "Missing required fields!" });
+router.post("/", validateCreateProduct, (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
   }
+
+  const { name, description, price, inStock, category, image } = req.body;
 
   const newProduct = {
     id: PRODUCTS.length + 1,
@@ -62,7 +80,12 @@ router.post("/", (req, res) => {
   });
 });
 
-router.put("/:id", checkProductExists, (req, res) => {
+router.put("/:id", validateUpdateProduct, checkProductExists, (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const { id } = req.params;
   const { name, description, price, inStock, category, image } = req.body;
 
@@ -87,7 +110,12 @@ router.put("/:id", checkProductExists, (req, res) => {
   });
 });
 
-router.patch("/:id", checkProductExists, (req, res) => {
+router.patch("/:id", validatePatchProduct, checkProductExists, (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const { id } = req.params;
   const updates = req.body;
 
@@ -103,7 +131,12 @@ router.patch("/:id", checkProductExists, (req, res) => {
   });
 });
 
-router.delete("/:id", checkProductExists, (req, res) => {
+router.delete("/:id", validateId, checkProductExists, (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
   const productId = parseInt(req.params.id);
   const index = PRODUCTS.findIndex((p) => p.id === productId);
 
