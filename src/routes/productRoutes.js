@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { checkProductExists } from "../middlewares/checkProductExists.js";
+import { handleValidationErrors } from "../middlewares/handleValidationErrors.js";
 import {
   validateCreateProduct,
   validateGetProducts,
@@ -7,54 +8,38 @@ import {
   validatePatchProduct,
   validateUpdateProduct,
 } from "../validators/productsValidators.js";
-import {
-  createProduct,
-  deleteProduct,
-  getProducts,
-  updateProduct,
-} from "../services/productService.js";
-import { handleValidationErrors } from "../middlewares/handleValidationErrors.js";
+import * as productController from "../controllers/productController.js";
 
 const router = Router();
 
-router.get("/", validateGetProducts, handleValidationErrors, (req, res) => {
-  const products = getProducts(req.query);
-
-  res.json(products);
-});
+router.get(
+  "/",
+  validateGetProducts,
+  handleValidationErrors,
+  productController.getProducts
+);
 
 router.get(
   "/:id",
   validateId,
   checkProductExists,
   handleValidationErrors,
-  (req, res) => {
-    res.json(req.product);
-  }
+  productController.getProductById
 );
 
-router.post("/", validateCreateProduct, handleValidationErrors, (req, res) => {
-  const newProduct = createProduct(req.body);
-
-  res.status(201).json({
-    message: "Product created successfully!",
-    product: newProduct,
-  });
-});
+router.post(
+  "/",
+  validateCreateProduct,
+  handleValidationErrors,
+  productController.createProduct
+);
 
 router.put(
   "/:id",
   validateUpdateProduct,
   checkProductExists,
   handleValidationErrors,
-  (req, res) => {
-    const updatedProduct = updateProduct(req.params.id, req.body);
-
-    res.json({
-      message: "Product updated successfully!",
-      product: updatedProduct,
-    });
-  }
+  productController.updateProduct
 );
 
 router.patch(
@@ -62,14 +47,7 @@ router.patch(
   validatePatchProduct,
   checkProductExists,
   handleValidationErrors,
-  (req, res) => {
-    const updatedProduct = updateProduct(req.params.id, req.body);
-
-    res.json({
-      message: "Product updated successfully!",
-      product: updatedProduct,
-    });
-  }
+  productController.updateProduct
 );
 
 router.delete(
@@ -77,13 +55,7 @@ router.delete(
   validateId,
   checkProductExists,
   handleValidationErrors,
-  (req, res) => {
-    const deletedProduct = deleteProduct(req.params.id);
-    res.json({
-      message: "Product deleted successfully!",
-      deleted: deletedProduct,
-    });
-  }
+  productController.deleteProduct
 );
 
 export default router;
