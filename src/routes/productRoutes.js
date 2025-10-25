@@ -18,8 +18,7 @@ import { handleValidationErrors } from "../middlewares/handleValidationErrors.js
 const router = Router();
 
 router.get("/", validateGetProducts, handleValidationErrors, (req, res) => {
-  const { filter, value, page = 1, limit = 10 } = req.query;
-  const products = getProducts({ filter, value, page, limit });
+  const products = getProducts(req.query);
 
   res.json(products);
 });

@@ -1,18 +1,19 @@
 import { PRODUCTS } from "../data/products.js";
 
-export const getProducts = ({ filter, value, page = 1, limit = 10 }) => {
+export const getProducts = ({ q = "", page = 1, limit = 10 }) => {
   const pageNum = parseInt(page, 10);
   const limitNum = parseInt(limit, 10);
 
   let filteredProducts = PRODUCTS;
 
-  if (filter && value) {
-    filteredProducts = PRODUCTS.filter((product) => {
-      const fieldValue = product[filter];
-      return typeof fieldValue === "string"
-        ? fieldValue.toLowerCase().includes(value.toLowerCase())
-        : fieldValue == value;
-    });
+  if (q.trim()) {
+    const query = q.toLowerCase();
+    filteredProducts = PRODUCTS.filter(
+      (product) =>
+        product.name.toLowerCase().includes(query) ||
+        product.description.toLowerCase().includes(query) ||
+        product.category.toLowerCase().includes(query)
+    );
   }
 
   const startIndex = (pageNum - 1) * limitNum;

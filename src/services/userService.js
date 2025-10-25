@@ -1,7 +1,7 @@
 import { USERS } from "../data/users.js";
 import bcrypt from "bcryptjs";
 
-export const getUsers = ({ q, page, limit }) => {
+export const getUsers = ({ q = "", page = 1, limit = 10 }) => {
   const pageNum = parseInt(page);
   const limitNum = parseInt(limit);
   let filteredUsers = USERS;
@@ -13,6 +13,7 @@ export const getUsers = ({ q, page, limit }) => {
         user.name.toLowerCase().includes(query) ||
         user.email.toLowerCase().includes(query)
     );
+
     const startIndex = (pageNum - 1) * limitNum;
     const endIndex = startIndex + limitNum;
     const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
