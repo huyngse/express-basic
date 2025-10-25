@@ -1,22 +1,11 @@
 import { Router } from "express";
-import { validateLogin } from "../validators/auth.js";
-import { validationResult } from "express-validator";
+import { validateLogin } from "../validators/authValidators.js";
 import { USERS } from "../data/users.js";
+import { handleValidationErrors } from "../middlewares/handleValidationErrors.js";
 
 const router = Router();
 
-const handleValidationErrors = (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    res.status(400).json({ errors: errors.array() });
-    return true;
-  }
-  return false;
-};
-
-router.post("/login", validateLogin, (req, res) => {
-  if (handleValidationErrors(req, res)) return;
-
+router.post("/login", validateLogin, handleValidationErrors, (req, res) => {
   const { email, password } = req.body;
   const user = USERS.find(
     (user) =>

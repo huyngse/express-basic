@@ -1,4 +1,4 @@
-import { PRODUCTS } from "../data/products.js";
+import { getProductById } from "../services/productService.js";
 
 export const checkProductExists = (req, res, next) => {
   const { id } = req.params;
@@ -12,7 +12,7 @@ export const checkProductExists = (req, res, next) => {
     return res.status(400).json({ message: "Invalid product ID!" });
   }
 
-  const product = PRODUCTS.find((p) => p.id === numericId);
+  const product = getProductById(numericId);
 
   if (!product) {
     return res.status(404).json({ message: "Product not found!" });
