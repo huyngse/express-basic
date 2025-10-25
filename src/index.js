@@ -9,6 +9,7 @@ import logger from "./middlewares/logger.js";
 import chalk from "chalk";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import session from "express-session";
 
 dotenv.config();
 
@@ -39,12 +40,27 @@ const swaggerOptions = {
 const swaggerSpec = swaggerJSDoc(swaggerOptions);
 
 app.use(express.json());
-app.use(cookieParser(process.env.SECRET_KEY));
-
+app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(
+  session({
+    resave: false,
+    saveUninitialized: false,
+    secret: process.env.SESSION_SECRET,
+    cookie: {
+      maxAge: 3_600_000,
+    },
+  })
+);
 app.use(logger);
 
 app.get("/", (req, res) => {
-  console.log(req.signedCookies);
+  req.sessionStore.get(req.session.id, (error, sessionData) => {
+    if (error) {
+      console.log("Error: ", error);
+      throw error;
+    }
+    console.log(sessionData);
+  });
   return res.status(200).json({ msg: "Hello world!" });
 });
 
