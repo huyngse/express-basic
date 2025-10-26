@@ -6,7 +6,12 @@ export const getProducts = (req, res) => {
 };
 
 export const getProductById = (req, res) => {
-  res.json(req.product);
+  const product = productService.getProductById(req.params.id);
+
+  if (!product) {
+    return res.status(404).json({ message: "Product not found!" });
+  }
+  res.json(product);
 };
 
 export const createProduct = (req, res) => {
@@ -19,6 +24,12 @@ export const createProduct = (req, res) => {
 };
 
 export const updateProduct = (req, res) => {
+  const product = productService.getProductById(req.params.id);
+
+  if (!product) {
+    return res.status(404).json({ message: "Product not found!" });
+  }
+
   const updatedProduct = productService.updateProduct(req.params.id, req.body);
 
   res.json({
@@ -28,6 +39,11 @@ export const updateProduct = (req, res) => {
 };
 
 export const deleteProduct = (req, res) => {
+  const product = productService.getProductById(req.params.id);
+
+  if (!product) {
+    return res.status(404).json({ message: "Product not found!" });
+  }
   const deletedProduct = productService.deleteProduct(req.params.id);
   res.json({
     message: "Product deleted successfully!",

@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { checkProductExists } from "../middlewares/checkProductExists.js";
 import { handleValidationErrors } from "../middlewares/handleValidationErrors.js";
 import {
   validateCreateProduct,
@@ -22,7 +21,6 @@ router.get(
 router.get(
   "/products/:id",
   validateProductId,
-  checkProductExists,
   handleValidationErrors,
   productController.getProductById
 );
@@ -37,7 +35,6 @@ router.post(
 router.put(
   "/products/:id",
   validateUpdateProduct,
-  checkProductExists,
   handleValidationErrors,
   productController.updateProduct
 );
@@ -45,7 +42,6 @@ router.put(
 router.patch(
   "/products/:id",
   validatePatchProduct,
-  checkProductExists,
   handleValidationErrors,
   productController.updateProduct
 );
@@ -53,7 +49,6 @@ router.patch(
 router.delete(
   "/products/:id",
   validateProductId,
-  checkProductExists,
   handleValidationErrors,
   productController.deleteProduct
 );
