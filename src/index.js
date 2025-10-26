@@ -1,6 +1,7 @@
 import express from "express";
 import productRouter from "./routes/productRoutes.js";
 import authRouter from "./routes/authRoutes.js";
+import cartRouter from "./routes/cartRoutes.js";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import path from "path";
@@ -64,8 +65,9 @@ app.get("/", (req, res) => {
   return res.status(200).json({ msg: "Hello world!" });
 });
 
-app.use("/api/products", productRouter);
-app.use("/api/auth", authRouter);
+app.use("/api", productRouter);
+app.use("/api", authRouter);
+app.use("/api", cartRouter);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

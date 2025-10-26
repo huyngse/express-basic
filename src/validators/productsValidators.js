@@ -13,7 +13,7 @@ export const validateGetProducts = [
     .withMessage("limit must be an integer >= 1"),
 ];
 
-export const validateId = [
+export const validateProductId = [
   param("id")
     .exists()
     .withMessage("id is required")
@@ -59,10 +59,13 @@ export const validateCreateProduct = [
     .withMessage("image must be a valid URL"),
 ];
 
-export const validateUpdateProduct = [...validateId, ...validateCreateProduct];
+export const validateUpdateProduct = [
+  ...validateProductId,
+  ...validateCreateProduct,
+];
 
 export const validatePatchProduct = [
-  ...validateId,
+  ...validateProductId,
   body("name")
     .optional()
     .isString()

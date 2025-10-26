@@ -33,6 +33,12 @@ export const getProductById = (id) => {
   return PRODUCTS.find((product) => product.id === parseInt(id));
 };
 
+export const getProductsByIds = (ids = []) => {
+  if (!Array.isArray(ids)) return [];
+  const idNumbers = ids.map((id) => parseInt(id));
+  return PRODUCTS.filter((product) => idNumbers.includes(product.id));
+};
+
 export const createProduct = ({
   name,
   description,

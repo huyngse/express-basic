@@ -4,7 +4,7 @@ import { handleValidationErrors } from "../middlewares/handleValidationErrors.js
 import {
   validateCreateProduct,
   validateGetProducts,
-  validateId,
+  validateProductId,
   validatePatchProduct,
   validateUpdateProduct,
 } from "../validators/productsValidators.js";
@@ -13,29 +13,29 @@ import * as productController from "../controllers/productController.js";
 const router = Router();
 
 router.get(
-  "/",
+  "/products",
   validateGetProducts,
   handleValidationErrors,
   productController.getProducts
 );
 
 router.get(
-  "/:id",
-  validateId,
+  "/products/:id",
+  validateProductId,
   checkProductExists,
   handleValidationErrors,
   productController.getProductById
 );
 
 router.post(
-  "/",
+  "/products",
   validateCreateProduct,
   handleValidationErrors,
   productController.createProduct
 );
 
 router.put(
-  "/:id",
+  "/products/:id",
   validateUpdateProduct,
   checkProductExists,
   handleValidationErrors,
@@ -43,7 +43,7 @@ router.put(
 );
 
 router.patch(
-  "/:id",
+  "/products/:id",
   validatePatchProduct,
   checkProductExists,
   handleValidationErrors,
@@ -51,8 +51,8 @@ router.patch(
 );
 
 router.delete(
-  "/:id",
-  validateId,
+  "/products/:id",
+  validateProductId,
   checkProductExists,
   handleValidationErrors,
   productController.deleteProduct
