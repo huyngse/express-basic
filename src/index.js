@@ -11,6 +11,8 @@ import chalk from "chalk";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import session from "express-session";
+import passport from "passport";
+import "./strategies/localStrategy.js"
 
 dotenv.config();
 
@@ -52,6 +54,8 @@ app.use(
     },
   })
 );
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(logger);
 
 app.get("/", (req, res) => {
