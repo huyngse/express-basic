@@ -1,12 +1,12 @@
 import * as productService from "../services/productService.js";
 
-export const getProducts = (req, res) => {
-  const products = productService.getProducts(req.query);
+export const getProducts = async (req, res) => {
+  const products = await productService.getProducts(req.query);
   res.json(products);
 };
 
-export const getProductById = (req, res) => {
-  const product = productService.getProductById(req.params.id);
+export const getProductById = async (req, res) => {
+  const product = await productService.getProductById(req.params.id);
 
   if (!product) {
     return res.status(404).json({ message: "Product not found!" });
@@ -14,8 +14,8 @@ export const getProductById = (req, res) => {
   res.json(product);
 };
 
-export const createProduct = (req, res) => {
-  const newProduct = productService.createProduct(req.body);
+export const createProduct = async (req, res) => {
+  const newProduct = await productService.createProduct(req.body);
 
   res.status(201).json({
     message: "Product created successfully!",
@@ -23,14 +23,17 @@ export const createProduct = (req, res) => {
   });
 };
 
-export const updateProduct = (req, res) => {
-  const product = productService.getProductById(req.params.id);
+export const updateProduct = async (req, res) => {
+  const product = await productService.getProductById(req.params.id);
 
   if (!product) {
     return res.status(404).json({ message: "Product not found!" });
   }
 
-  const updatedProduct = productService.updateProduct(req.params.id, req.body);
+  const updatedProduct = await productService.updateProduct(
+    req.params.id,
+    req.body
+  );
 
   res.json({
     message: "Product updated successfully!",
@@ -38,13 +41,13 @@ export const updateProduct = (req, res) => {
   });
 };
 
-export const deleteProduct = (req, res) => {
-  const product = productService.getProductById(req.params.id);
+export const deleteProduct = async (req, res) => {
+  const product = await productService.getProductById(req.params.id);
 
   if (!product) {
     return res.status(404).json({ message: "Product not found!" });
   }
-  const deletedProduct = productService.deleteProduct(req.params.id);
+  const deletedProduct = await productService.deleteProduct(req.params.id);
   res.json({
     message: "Product deleted successfully!",
     deleted: deletedProduct,

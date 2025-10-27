@@ -12,9 +12,15 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import session from "express-session";
 import passport from "passport";
-import "./strategies/localStrategy.js"
+import mongoose from "mongoose";
+import "./strategies/localStrategy.js";
 
 dotenv.config();
+
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("Connected to MongoDB Atlas"))
+  .catch((error) => console.log("Connection error: ", error));
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

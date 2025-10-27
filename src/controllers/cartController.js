@@ -1,6 +1,6 @@
 import * as productService from "../services/productService.js";
 
-export const getItems = (req, res) => {
+export const getItems = async (req, res) => {
   const cartItems = req.session.cart;
   if (!cartItems || cartItems.length === 0) {
     return res.json([]);
@@ -11,16 +11,16 @@ export const getItems = (req, res) => {
   const cartLookUp = Object.fromEntries(
     cartItems.map((ci) => [ci.id, ci.quantity])
   );
-  const products = productService
+  const products = await productService
     .getProductsByIds(itemIds)
     .map((p) => ({ ...p, quantity: cartLookUp[p.id] || 0 }));
 
   return res.json(products);
 };
 
-export const addItem = (req, res) => {
+export const addItem = async (req, res) => {
   const { id, quantity } = req.body;
-  const product = productService.getProductById(id);
+  const product = await productService.getProductById(id);
   if (!product) {
     return res.status(400).json({ message: "Product not found!" });
   }
