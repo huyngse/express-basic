@@ -1,4 +1,5 @@
 import { body, param, query } from "express-validator";
+import mongoose from "mongoose";
 
 export const validateGetProducts = [
   query("filter").optional().isString().withMessage("filter must be a string"),
@@ -17,8 +18,8 @@ export const validateProductId = [
   param("id")
     .exists()
     .withMessage("id is required")
-    .isInt({ gt: 0 })
-    .withMessage("id must be a positive integer"),
+    .custom((value) => mongoose.Types.ObjectId.isValid(value))
+    .withMessage("Invalid id format!"),
 ];
 
 export const validateCreateProduct = [
