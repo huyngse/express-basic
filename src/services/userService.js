@@ -1,81 +1,34 @@
-import { USERS } from "../data/users.js";
-import bcrypt from "bcryptjs";
+import userRepository from "../repositories/userRepository.js";
 
-export const getUsers = ({ q = "", page = 1, limit = 10 }) => {
+export const getUsers = async ({ q = "", page = 1, limit = 10 }) => {
   const pageNum = parseInt(page);
   const limitNum = parseInt(limit);
-  let filteredUsers = USERS;
-
-  if (q.trim()) {
-    const query = q.toLowerCase();
-    filteredUsers = USERS.filter(
-      (user) =>
-        user.name.toLowerCase().includes(query) ||
-        user.email.toLowerCase().includes(query)
-    );
-
-    const startIndex = (pageNum - 1) * limitNum;
-    const endIndex = startIndex + limitNum;
-    const paginatedUsers = filteredUsers.slice(startIndex, endIndex);
-    const safeUsers = paginatedUsers.map(({ password, ...rest }) => rest);
-
-    return {
-      page: pageNum,
-      limit: limitNum,
-      totalItems: filteredUsers.length,
-      totalPages: Math.ceil(filteredUsers.length / limitNum),
-      data: safeUsers,
-    };
-  }
-};
-
-export const getUserById = (id) => {
-  const user = USERS.find((user) => user.id === id);
-  if (!user) return null;
-  const { password, ...safeUser } = user;
-  return safeUser;
-};
-
-export const createUser = async ({ name, email, age, password }) => {
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = {
-    id: USERS.length + 1,
-    name,
-    email,
-    age,
-    password: hashedPassword,
+  const [users, totalItems] = await userRepository.getPaginated(q, page, limit);
+  return {
+    page: pageNum,
+    limit: limitNum,
+    totalItems,
+    totalPages: Math.ceil(totalItems / limitNum),
+    data: users,
   };
-  USERS.push(newUser);
-
-  const { password: _, ...safeUser } = newUser;
-  return safeUser;
 };
 
-export const updateUser = (id, updates) => {
-  const index = USERS.findIndex((user) => user.id === parseInt(id));
-  if (index === -1) return null;
-  const existingUser = USERS[index];
-  const updatedUser = { ...existingUser, ...updates };
-  USERS[index] = updatedUser;
-  const { password: _, ...safeUser } = updatedUser;
-  return safeUser;
+export const getUserById = async (id) => {
+  return await userRepository.getById(id);
 };
 
-export const deleteUser = (id) => {
-  const index = USERS.findIndex((user) => user.id === parseInt(id));
-  if (index === -1) return null;
-  const deletedUser = USERS.splice(index, 1)[0];
-  const { password: _, ...safeUser } = deletedUser;
-  return safeUser;
+export const createUser = async (data) => {
+  return await userRepository.create(data);
 };
 
-export const authenticateUser = async (email, password) => {
-  const user = USERS.find(
-    (user) => user.email.toLowerCase() === email.toLowerCase()
-  );
-  if (!user) return null;
-  const isPasswordValid = await bcrypt.compare(password, user.password);
-  if (!isPasswordValid) return null;
-  const { password: _, ...safeUser } = user;
-  return safeUser;
+export const updateUser = async (id, updates) => {
+  return await userRepository.update(id, updates);
+};
+
+export const deleteUser = async (id) => {
+  return await userRepository.delete(id);
+};
+
+export const authenticateUser = async ({ email, password }) => {
+  return await userRepository.authenticateUser(email, password);
 };
