@@ -1,4 +1,4 @@
-import * as productService from "../services/productService.js";
+import productService from "../services/productService.js";
 
 export const getProducts = async (req, res) => {
   const products = await productService.getProducts(req.query);

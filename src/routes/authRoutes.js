@@ -1,19 +1,7 @@
 import { Router } from "express";
-// import { validateLogin } from "../validators/authValidators.js";
-// import { handleValidationErrors } from "../middlewares/handleValidationErrors.js";
-// import * as authController from "../controllers/authController.js";
 import passport from "passport";
 
 const router = Router();
-
-// router.post(
-//   "/auth/login",
-//   validateLogin,
-//   handleValidationErrors,
-//   authController.login
-// );
-
-// router.get("/auth/me", authController.me);
 
 router.post("/auth/login", passport.authenticate("local"), (req, res) => {
   res.json({ message: "Login successfully!" });

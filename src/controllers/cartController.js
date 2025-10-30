@@ -1,4 +1,4 @@
-import * as productService from "../services/productService.js";
+import productService from "../services/productService.js";
 
 export const getItems = async (req, res) => {
   const cartItems = req.session.cart;

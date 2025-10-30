@@ -1,6 +1,6 @@
 import passport from "passport";
 import { Strategy } from "passport-local";
-import * as userService from "../services/userService.js";
+import userService from "../services/userService.js";
 
 passport.serializeUser((user, done) => {
   done(null, user.id);
