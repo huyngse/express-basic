@@ -2,6 +2,7 @@ import express from "express";
 import productRouter from "./routes/productRoutes.js";
 import authRouter from "./routes/authRoutes.js";
 import cartRouter from "./routes/cartRoutes.js";
+import userRouter from "./routes/userRoutes.js";
 import swaggerJSDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import path from "path";
@@ -78,6 +79,7 @@ app.get("/", (req, res) => {
 app.use("/api", productRouter);
 app.use("/api", authRouter);
 app.use("/api", cartRouter);
+app.use("/api", userRouter);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

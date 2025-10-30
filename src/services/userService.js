@@ -3,7 +3,11 @@ import userRepository from "../repositories/userRepository.js";
 export const getUsers = async ({ q = "", page = 1, limit = 10 }) => {
   const pageNum = parseInt(page);
   const limitNum = parseInt(limit);
-  const [users, totalItems] = await userRepository.getPaginated(q, page, limit);
+  const { users, totalItems } = await userRepository.getPaginated(
+    q,
+    page,
+    limit
+  );
   return {
     page: pageNum,
     limit: limitNum,
