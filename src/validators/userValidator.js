@@ -1,7 +1,7 @@
 import { body, param } from "express-validator";
 import mongoose from "mongoose";
 
-export const validateUserId = [
+export const userIdValidator = [
   param("id")
     .exists()
     .withMessage("id is required")

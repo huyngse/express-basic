@@ -1,11 +1,11 @@
 import { Router } from "express";
 import cartController from "../controllers/cartController.js";
-import {
-  validateAddItemToCart,
-  validateItemQuantity,
-} from "../validators/cartValidators.js";
 import { handleValidationErrors } from "../middlewares/handleValidationErrors.js";
-import { validateProductId } from "../validators/productsValidators.js";
+import {
+  addItemToCartValidator,
+  itemQuantityValidator,
+} from "../validators/cartValidators.js";
+import { productIdValidator } from "../validators/productsValidators.js";
 
 const router = Router();
 
@@ -13,22 +13,22 @@ router.get("/cart", cartController.getItems);
 
 router.post(
   "/cart",
-  validateAddItemToCart,
+  addItemToCartValidator,
   handleValidationErrors,
   cartController.addItem
 );
 
 router.put(
   "/cart/:id",
-  validateProductId,
-  validateItemQuantity,
+  productIdValidator,
+  itemQuantityValidator,
   handleValidationErrors,
   cartController.updateItemQuantity
 );
 
 router.delete(
   "/cart/:id",
-  validateProductId,
+  productIdValidator,
   handleValidationErrors,
   cartController.removeItem
 );

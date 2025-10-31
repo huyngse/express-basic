@@ -2,7 +2,7 @@ import { Router } from "express";
 import userController from "../controllers/userController.js";
 import {
   createUserValidator,
-  validateUserId,
+  userIdValidator,
 } from "../validators/userValidator.js";
 import { handleValidationErrors } from "../middlewares/handleValidationErrors.js";
 
@@ -12,7 +12,7 @@ router.get("/users", userController.getUsers);
 
 router.get(
   "/users/:id",
-  validateUserId,
+  userIdValidator,
   handleValidationErrors,
   userController.getUserById
 );

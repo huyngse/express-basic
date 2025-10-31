@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-export const validateItemQuantity = [
+export const itemQuantityValidator = [
   body("quantity")
     .exists()
     .withMessage("quantity is required")
@@ -8,11 +8,11 @@ export const validateItemQuantity = [
     .withMessage("quantity must be between 1 and 100"),
 ];
 
-export const validateAddItemToCart = [
+export const addItemToCartValidator = [
   body("id")
     .exists()
     .withMessage("id is required")
     .isInt({ gt: 0 })
     .withMessage("id must be a positive integer"),
-  validateItemQuantity,
+  itemQuantityValidator,
 ];

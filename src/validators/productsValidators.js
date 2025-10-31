@@ -1,9 +1,7 @@
 import { body, param, query } from "express-validator";
 import mongoose from "mongoose";
 
-export const validateGetProducts = [
-  query("filter").optional().isString().withMessage("filter must be a string"),
-  query("value").optional().isString().withMessage("value must be a string"),
+export const getProductsValidator = [
   query("page")
     .optional()
     .isInt({ min: 1 })
@@ -14,7 +12,7 @@ export const validateGetProducts = [
     .withMessage("limit must be an integer >= 1"),
 ];
 
-export const validateProductId = [
+export const productIdValidator = [
   param("id")
     .exists()
     .withMessage("id is required")
@@ -22,7 +20,7 @@ export const validateProductId = [
     .withMessage("Invalid id format!"),
 ];
 
-export const validateCreateProduct = [
+export const createProductValidator = [
   body("name")
     .exists()
     .withMessage("name is required")
@@ -60,13 +58,13 @@ export const validateCreateProduct = [
     .withMessage("image must be a valid URL"),
 ];
 
-export const validateUpdateProduct = [
-  ...validateProductId,
-  ...validateCreateProduct,
+export const updateProductValidator = [
+  ...productIdValidator,
+  ...createProductValidator,
 ];
 
-export const validatePatchProduct = [
-  ...validateProductId,
+export const patchProductValidator = [
+  ...productIdValidator,
   body("name")
     .optional()
     .isString()

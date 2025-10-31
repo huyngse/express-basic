@@ -1,54 +1,54 @@
 import { Router } from "express";
 import { handleValidationErrors } from "../middlewares/handleValidationErrors.js";
-import {
-  validateCreateProduct,
-  validateGetProducts,
-  validateProductId,
-  validatePatchProduct,
-  validateUpdateProduct,
-} from "../validators/productsValidators.js";
 import productController from "../controllers/productController.js";
+import {
+  createProductValidator,
+  getProductsValidator,
+  patchProductValidator,
+  productIdValidator,
+  updateProductValidator,
+} from "../validators/productsValidators.js";
 
 const router = Router();
 
 router.get(
   "/products",
-  validateGetProducts,
+  getProductsValidator,
   handleValidationErrors,
   productController.getProducts
 );
 
 router.get(
   "/products/:id",
-  validateProductId,
+  productIdValidator,
   handleValidationErrors,
   productController.getProductById
 );
 
 router.post(
   "/products",
-  validateCreateProduct,
+  createProductValidator,
   handleValidationErrors,
   productController.createProduct
 );
 
 router.put(
   "/products/:id",
-  validateUpdateProduct,
+  updateProductValidator,
   handleValidationErrors,
   productController.updateProduct
 );
 
 router.patch(
   "/products/:id",
-  validatePatchProduct,
+  patchProductValidator,
   handleValidationErrors,
   productController.updateProduct
 );
 
 router.delete(
   "/products/:id",
-  validateProductId,
+  productIdValidator,
   handleValidationErrors,
   productController.deleteProduct
 );
