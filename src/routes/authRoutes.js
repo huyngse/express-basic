@@ -3,8 +3,15 @@ import passport from "passport";
 
 const router = Router();
 
-router.post("/auth/login", passport.authenticate("local"), (req, res) => {
-  res.json({ message: "Login successfully!" });
+router.post("/auth/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (!user) return res.status(401).json({ error: info.message });
+    req.logIn(user, (err) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ message: "Login successfully!" });
+    });
+  })(req, res, next);
 });
 
 router.get("/auth/me", (req, res) => {

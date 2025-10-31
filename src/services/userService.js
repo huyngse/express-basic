@@ -34,8 +34,8 @@ const userService = {
     return await userRepository.delete(id);
   },
 
-  authenticateUser: async ({ email, password }) => {
-    return await userRepository.authenticateUser(email, password);
+  authenticateUser: async (email, password) => {
+    return await userRepository.authenticateUser({ email, password });
   },
 };
 

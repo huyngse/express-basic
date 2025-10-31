@@ -3,7 +3,7 @@ import { Strategy } from "passport-local";
 import userService from "../services/userService.js";
 
 passport.serializeUser((user, done) => {
-  done(null, user.id);
+  done(null, user._id);
 });
 
 passport.deserializeUser(async (id, done) => {
@@ -26,11 +26,11 @@ export default passport.use(
       const user = await userService.authenticateUser(email, password);
       try {
         if (!user) {
-          throw new Error("Incorrect email or password!");
+          return done(null, false, { message: "Incorrect email or password!" });
         }
-        done(null, user);
+        return done(null, user);
       } catch (error) {
-        done(error, null);
+        return done(error, null);
       }
     }
   )
