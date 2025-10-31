@@ -1,4 +1,5 @@
 import userService from "../services/userService.js";
+
 const userController = {
   getUsers: async (req, res) => {
     const users = await userService.getUsers(req.query);

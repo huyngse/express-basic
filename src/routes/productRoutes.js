@@ -7,7 +7,7 @@ import {
   validatePatchProduct,
   validateUpdateProduct,
 } from "../validators/productsValidators.js";
-import * as productController from "../controllers/productController.js";
+import productController from "../controllers/productController.js";
 
 const router = Router();
 
