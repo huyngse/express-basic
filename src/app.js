@@ -4,6 +4,7 @@ import logger from "./middlewares/logger.js";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import session from "express-session";
+import MongoStore from "connect-mongo";
 import passport from "passport";
 import "./strategies/localStrategy.js";
 import { swaggerSpec } from "./config/swagger.js";
@@ -13,21 +14,30 @@ import {
   productRouter,
   userRouter,
 } from "./routes/index.js";
+import mongoose from "mongoose";
+import { connectDB } from "./config/db.js";
 
 dotenv.config();
 
 const app = express();
 
+await connectDB(process.env.MONGO_URI);
+
 app.use(express.json());
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(
   session({
-    resave: false,
+    resave: true,
     saveUninitialized: false,
     secret: process.env.SESSION_SECRET,
     cookie: {
       maxAge: 3_600_000,
     },
+    store: MongoStore.create({
+      client: mongoose.connection.getClient(),
+      collectionName: "sessions",
+      ttl: 14 * 24 * 60 * 60,
+    }),
   })
 );
 app.use(passport.initialize());
