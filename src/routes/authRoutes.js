@@ -29,4 +29,17 @@ router.post("/auth/logout", (req, res) => {
   });
 });
 
+router.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+router.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/" }),
+  (req, res) => {
+    res.send(`Hello ${req.user.name}`);
+  }
+);
+
 export default router;

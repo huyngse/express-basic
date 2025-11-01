@@ -30,6 +30,10 @@ const userRepository = {
     return User.findById(id).select("-password");
   },
 
+  getByGoogleId: async (id) => {
+    return User.findOne({ googleId: id });
+  },
+
   create: async ({ name, email, age, password }) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({
@@ -42,6 +46,17 @@ const userRepository = {
 
     const userObj = user.toObject();
     delete userObj.password;
+    return userObj;
+  },
+
+  createGoogleUser: async ({ name, email, googleId }) => {
+    const user = new User({
+      name,
+      email,
+      googleId,
+    });
+    await user.save();
+    const userObj = user.toObject();
     return userObj;
   },
 

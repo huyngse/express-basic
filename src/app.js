@@ -1,12 +1,15 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import swaggerUi from "swagger-ui-express";
 import logger from "./middlewares/logger.js";
 import cookieParser from "cookie-parser";
-import dotenv from "dotenv";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import passport from "passport";
 import "./strategies/localStrategy.js";
+import "./strategies/googleStrategy.js";
 import { swaggerSpec } from "./config/swagger.js";
 import {
   authRouter,
@@ -16,8 +19,6 @@ import {
 } from "./routes/index.js";
 import mongoose from "mongoose";
 import { connectDB } from "./config/db.js";
-
-dotenv.config();
 
 const app = express();
 

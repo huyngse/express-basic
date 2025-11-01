@@ -22,8 +22,16 @@ const userService = {
     return await userRepository.getById(id);
   },
 
+  getUserByGoogleId: async (id) => {
+    return await userRepository.getByGoogleId(id);
+  },
+
   createUser: async (data) => {
     return await userRepository.create(data);
+  },
+
+  createGoogleUser: async (data) => {
+    return await userRepository.createGoogleUser(data);
   },
 
   updateUser: async (id, updates) => {
