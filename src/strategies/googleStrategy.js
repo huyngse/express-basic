@@ -28,7 +28,6 @@ export default passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        console.log("Google profile:", profile);
         let existingUser = await userService.getUserByGoogleId(profile.id);
         if (existingUser) {
           return done(null, existingUser);

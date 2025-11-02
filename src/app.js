@@ -46,14 +46,7 @@ app.use(passport.session());
 app.use(logger);
 
 app.get("/", (req, res) => {
-  req.sessionStore.get(req.session.id, (error, sessionData) => {
-    if (error) {
-      console.log("Error: ", error);
-      throw error;
-    }
-    console.log(sessionData);
-  });
-  return res.status(200).json({ msg: "Hello world!" });
+  return res.status(200).json({ message: "Hello world!" });
 });
 
 app.use("/api", productRouter);
